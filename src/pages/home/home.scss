@@ -1,0 +1,38 @@
+page-home {
+  .container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  #map{
+    background-color: #efefef;
+    width:100%;
+    position: absolute;
+    top:0;
+    bottom:15%;
+  }
+
+  #statusPanel{
+    position: absolute;
+    top:85%;
+    width:100%;
+    bottom:0;
+    background-color: #F5F5F5;
+  }
+
+  #compensator{
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background-color: rgba(0,0,0,0.35);
+  }
+
+  .line-right{
+    border-right: 2px solid #cfcfcf;
+  }
+}

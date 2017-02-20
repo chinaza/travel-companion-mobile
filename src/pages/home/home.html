@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Travel Companion</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <ion-fab right bottom>
+      <button ion-fab color="accent" (click)="getData()"><ion-icon name="navigate"></ion-icon></button>
+    </ion-fab>
+
+    <div #map id="map">
+      <div id="compensator" [hidden]="modalhide"></div>
+    </div>
+
+    <ion-grid id="statusPanel">
+      <ion-row style="height:98%" center>
+        <ion-col width-33 class="line-right">
+          <div style="margin: auto; text-align: center;">
+            <ion-icon name="md-speedometer" color="secondary" style="font-size:65px"></ion-icon>
+          </div>
+        </ion-col>
+        <ion-col width-67>
+          <h1 ion-text color="secondary" style="text-align: center; font-size:36px">{{bagData.weight}}</h1>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
