@@ -11,8 +11,11 @@ import { SelBagPage } from '../pages/sel-bag/sel-bag';
 export class MyApp {
   rootPage = SelBagPage;
 
-  constructor(platform: Platform) {
-    platform.ready().then(() => {
+  constructor(public platform: Platform) {    
+  }
+
+  ionViewDidLoad(){
+    this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();

@@ -11,6 +11,8 @@ import {
 } from 'ionic-native';
 
 import {BtComm, Bag} from '../../providers/bt-comm';
+import {SmsParser, Location} from '../../providers/sms-parser';
+import {QuickFunc} from '../../providers/quickfunc';
 
 
 declare var io;
@@ -26,8 +28,8 @@ export class HomePage {
   private socketHost:string;
   public bagData:{
     weight: string,
-    lat: string,
-    lng: string
+    lat: number,
+    lng: number
   };
   public modalhide:boolean = true;
 
@@ -36,18 +38,21 @@ export class HomePage {
     public loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private navParams: NavParams,
-    private btComm: BtComm
+    private btComm: BtComm,
+    private smsParser: SmsParser,
+    private quickFunc: QuickFunc
   ){
-    this.bagData = {
-      weight: "--",
-      lat: "",
-      lng: ""
-    };
   }
 
-  ngAfterViewInit() {
+  ionViewDidLoad(){
+    this.bagData = {
+      weight: "--",
+      lat: null,
+      lng: null
+    };
+
     this.platform.ready().then(() => { //When platform is ready, load google maps and add markers indicating bus stops
-      this.initMap();
+      this.getLocation();
       if (this.navParams.data.task != "retrLocation"){
         this.getWeight();
       }
@@ -71,44 +76,25 @@ export class HomePage {
     // listen to MAP_READY event
     this.map.one(GoogleMapsEvent.MAP_READY).then(() =>{
       console.log('Map is ready!');
-      this.initLocation(6.675943, 3.162387);
+      this.initLocation(this.bagData.lat, this.bagData.lng);
     });
   }
 
-  public getData(): void{
-    let timeoutc:boolean = true;
-    let loading = this.loadingCtrl.create({
-      content: 'Please chill...'
-    });
-    loading.present();
-    console.log("Requesting data...");
-    this.socketHost = "http://172.16.16.101:5000";
-    let socket = io(this.socketHost);
-    socket.emit("BagData", {cmd:"GetBagData", id: "12adb1"});
-    console.log("Emitting data...");
-    setTimeout(()=>{
-      if (timeoutc){
-        //Show alert and cancel Loading
-        loading.dismiss();
-        this.modalhide = false;
-        let alert = this.alertCtrl.create({
-          title: 'Poor network',
-          subTitle: 'Sorry, Failed to get to your bag',
-          buttons: ['Dismiss']
+  private getLocation(){
+    this.quickFunc.prompAlert('Bag ID', 'Enter your Bag ID').then(stat=>{
+      if (stat.status){
+        let timeoutc:boolean = true;
+        let loading = this.loadingCtrl.create({
+          content: 'Please chill...'
         });
-        alert.present();
-        alert.onDidDismiss((data)=>{
-          this.modalhide = true;
-        })
+        loading.present();
+        this.smsParser.reqLocation(stat.prompt).then(location=>{
+          loading.dismiss();
+          this.bagData.lat = location.lat;
+          this.bagData.lng = location.long;
+          this.initMap();
+        });
       }
-    }, 10000)
-    socket.on("BagData", (data:any) => {
-      timeoutc = false;
-      //Cancel Loading...
-      console.log(data);
-      this.bagData = data;
-      this.initLocation(parseFloat(this.bagData.lat), parseFloat(this.bagData.lng));
-      loading.dismiss();
     });
   }
 

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import {BtComm, Bag} from '../../providers/bt-comm';
 
+import {SmsParser} from '../../providers/sms-parser';
+
 import { HomePage } from '../home/home';
 /*
 Generated class for the SelBag page.
@@ -18,16 +20,15 @@ export class SelBagPage {
   private _bags:Array<Bag>;
   bags:Array<Bag>;
   query: string = "";
-  pushPage:Component;
-  params:{task}
+  pushPage:Component = HomePage;
+  params:{task:string} = { task: 'retrLocation' };
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private btComm: BtComm
+    private btComm: BtComm,
+    private smsParser: SmsParser
   ) {
-    this.pushPage = HomePage;
-    this.params = { task: 'retrLocation' };
   }
 
   ionViewDidLoad() {
