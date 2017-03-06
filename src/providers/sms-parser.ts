@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 
 /*
@@ -20,16 +21,19 @@ export interface Location{
 export class SmsParser {
 
   private trackerID:string;
+  private SMS;
 
-  constructor(public http: Http) {
-    console.log(SMS);
+  constructor(public http: Http, public platform: Platform) {
+    this.platform.ready().then(() => {
+      this.SMS = SMS;
+    });
   }
 
   public reqLocation(id:string):Promise<Location>{
     this.trackerID = '+234' + id;
     return new Promise((resolve, reject)=>{
       let reqString = "fix010s001n+password"; //Location request command
-      SMS.sendSMS(id, reqString,
+      this.SMS.sendSMS(id, reqString,
         ()=>{
           this.waitLocation().then((location)=>{
             resolve(location);
@@ -44,12 +48,12 @@ export class SmsParser {
 
     private waitLocation():Promise<Location>{
       return new Promise((resolve, reject)=>{
-        SMS.startWatch(()=>{
+        this.SMS.startWatch(()=>{
           document.addEventListener('onSMSArrive', (e)=>{
             let smsEvent:any = e,
             sms = smsEvent.data;
             console.log(sms);
-            if (sms.address == this.trackerID){
+            if (this.SMS.address == this.trackerID){
               let location:Location = this.parseSMS(sms);
               console.log('location', location);
               resolve(location);

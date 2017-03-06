@@ -1,15 +1,11 @@
-import {Injectable, NgZone} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
-import {ViewController, AlertController, LoadingController} from 'ionic-angular';
-import {Network} from 'ionic-native';
+import {Injectable} from '@angular/core';
+import {AlertController, LoadingController} from 'ionic-angular';
 
 @Injectable()
 export class QuickFunc {
 
   constructor (
-    public viewCtrl: ViewController,
     public alertController: AlertController,
-    public zone: NgZone,
     public loadingCtrl: LoadingController
   ){
   }

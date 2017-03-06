@@ -22,6 +22,11 @@ import { QuickFunc } from '../providers/quickfunc';
     HomePage,
     SelBagPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, BtComm, SmsParser, QuickFunc]
+  providers: [
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BtComm,
+    SmsParser,
+    QuickFunc
+  ]
 })
 export class AppModule {}

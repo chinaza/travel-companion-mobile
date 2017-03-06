@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import {BtComm, Bag} from '../../providers/bt-comm';
 
 import {SmsParser} from '../../providers/sms-parser';
@@ -20,12 +20,13 @@ export class SelBagPage {
   private _bags:Array<Bag>;
   bags:Array<Bag>;
   query: string = "";
-  pushPage:Component = HomePage;
-  params:{task:string} = { task: 'retrLocation' };
+  public pushPage:any = HomePage;
+  public params = { task: 'retrLocation' };
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public loadingCtrl: LoadingController,
     private btComm: BtComm,
     private smsParser: SmsParser
   ) {

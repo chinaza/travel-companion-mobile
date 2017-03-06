@@ -4,6 +4,7 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { SelBagPage } from '../pages/sel-bag/sel-bag';
 
+declare var cordova;
 
 @Component({
   templateUrl: 'app.html'
@@ -11,7 +12,7 @@ import { SelBagPage } from '../pages/sel-bag/sel-bag';
 export class MyApp {
   rootPage = SelBagPage;
 
-  constructor(public platform: Platform) {    
+  constructor(public platform: Platform) {
   }
 
   ionViewDidLoad(){

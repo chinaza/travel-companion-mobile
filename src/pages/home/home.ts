@@ -14,9 +14,6 @@ import {BtComm, Bag} from '../../providers/bt-comm';
 import {SmsParser, Location} from '../../providers/sms-parser';
 import {QuickFunc} from '../../providers/quickfunc';
 
-
-declare var io;
-
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -25,18 +22,20 @@ declare var io;
 export class HomePage {
 
   private map;
-  private socketHost:string;
   public bagData:{
     weight: string,
     lat: number,
     lng: number
+  } = {
+    weight: "--",
+    lat: null,
+    lng: null
   };
   public modalhide:boolean = true;
 
   constructor(
     public platform: Platform,
     public loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
     private navParams: NavParams,
     private btComm: BtComm,
     private smsParser: SmsParser,
@@ -45,15 +44,11 @@ export class HomePage {
   }
 
   ionViewDidLoad(){
-    this.bagData = {
-      weight: "--",
-      lat: null,
-      lng: null
-    };
 
     this.platform.ready().then(() => { //When platform is ready, load google maps and add markers indicating bus stops
       this.getLocation();
       if (this.navParams.data.task != "retrLocation"){
+        console.log('Getting weight');
         this.getWeight();
       }
     });
@@ -83,7 +78,7 @@ export class HomePage {
   private getLocation(){
     this.quickFunc.prompAlert('Bag ID', 'Enter your Bag ID').then(stat=>{
       if (stat.status){
-        let timeoutc:boolean = true;
+        //let timeoutc:boolean = true;
         let loading = this.loadingCtrl.create({
           content: 'Please chill...'
         });

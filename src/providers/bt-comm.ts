@@ -39,11 +39,13 @@ export class BtComm {
     return new Promise((resolve, reject)=>{
       this.btConn.isEnabled()
       .then(()=>{
+        console.log(bag.address);
         this.bagConn = this.btConn.connect(bag.address)
         .subscribe(()=>{
           resolve(true);
         },
         ()=>{
+          console.log('from here');
           reject(false);
         });
       })
