@@ -57,10 +57,11 @@ export class BtComm {
 
   public requestWeight():Promise<string>{
     return new Promise((resolve, reject)=>{
-      this.btConn.write('getWeight').then(
+      this.btConn.write('getweight').then(
         ()=>{
           let weightOb = this.btConn.subscribe('\n').subscribe(data=>{
             weightOb.unsubscribe();
+            console.log('Weight Data: ' + data);
             resolve(data);
           });
         }

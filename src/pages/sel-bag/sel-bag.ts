@@ -5,6 +5,7 @@ import {BtComm, Bag} from '../../providers/bt-comm';
 import {SmsParser} from '../../providers/sms-parser';
 
 import { HomePage } from '../home/home';
+import {QuickFunc} from '../../providers/quickfunc';
 /*
 Generated class for the SelBag page.
 
@@ -28,7 +29,8 @@ export class SelBagPage {
     public navParams: NavParams,
     public loadingCtrl: LoadingController,
     private btComm: BtComm,
-    private smsParser: SmsParser
+    private smsParser: SmsParser,
+    private quickFunc: QuickFunc
   ) {
   }
 
@@ -72,9 +74,21 @@ public getBags(ev: any) {
 }
 
 connectBag(bag:Bag){
+  let loading = this.loadingCtrl.create({
+    content: 'Please chill...'
+  });
+  loading.present();
   this.btComm.connectBag(bag)
-  .then(state=>state?this.navCtrl.setRoot(HomePage):console.log('failed'))
-  .catch(err=>console.log('failed_with_error'));
+  .then(state=>{
+    loading.dismiss();
+    state?this.navCtrl.setRoot(HomePage):console.log('failed');
+  })
+  .catch(err=>{
+    loading.dismiss();
+    this.quickFunc.showAlert("Connection", "Failed to connect...");
+    console.log('failed_with_error');
+  });
+
 }
 
 
