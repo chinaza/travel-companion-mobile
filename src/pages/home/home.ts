@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform, LoadingController, AlertController, NavParams } from 'ionic-angular';
+import { Platform, LoadingController, NavParams } from 'ionic-angular';
 import {
   GoogleMap,
   GoogleMapsEvent,
@@ -10,7 +10,6 @@ import {
   GoogleMapsMarkerIcon
 } from 'ionic-native';
 
-import {BtComm, Bag} from '../../providers/bt-comm';
 import {SmsParser, Location} from '../../providers/sms-parser';
 import {QuickFunc} from '../../providers/quickfunc';
 
@@ -23,21 +22,19 @@ export class HomePage {
 
   private map;
   public bagData:{
-    weight: string,
     lat: number,
     lng: number
   } = {
-    weight: "--",
     lat: null,
     lng: null
   };
+  private bagId: string;
   public modalhide:boolean = true;
 
   constructor(
     public platform: Platform,
     public loadingCtrl: LoadingController,
     private navParams: NavParams,
-    private btComm: BtComm,
     private smsParser: SmsParser,
     private quickFunc: QuickFunc
   ){
@@ -47,16 +44,6 @@ export class HomePage {
 
     this.platform.ready().then(() => { //When platform is ready, load google maps and add markers indicating bus stops
       this.getLocation();
-      if (this.navParams.data.task != "retrLocation"){
-        console.log('Getting weight');
-        this.getWeight();
-      }
-    });
-  }
-
-  private getWeight(){
-    this.btComm.requestWeight().then(weight=>{
-      this.bagData.weight = weight;
     });
   }
 
@@ -66,29 +53,32 @@ export class HomePage {
 
     this.map = new GoogleMap(element); //Create map element
 
-    this.map.setMapTypeId("MAP_TYPE_HYBRID"); //Set map type to HYBRID
-
     // listen to MAP_READY event
     this.map.one(GoogleMapsEvent.MAP_READY).then(() =>{
       console.log('Map is ready!');
+      this.map.setMapTypeId("MAP_TYPE_HYBRID"); //Set map type to Hybrid
       this.initLocation(this.bagData.lat, this.bagData.lng);
     });
   }
 
   private getLocation(){
     this.quickFunc.prompAlert('Bag ID', 'Enter your Bag ID').then(stat=>{
-      if (stat.status){
+      if (stat.status && stat.prompt == "074"){
+        this.bagId = stat.prompt
         //let timeoutc:boolean = true;
         let loading = this.loadingCtrl.create({
           content: 'Please chill...'
         });
         loading.present();
+
         this.smsParser.reqLocation(stat.prompt).then(location=>{
           loading.dismiss();
           this.bagData.lat = location.lat;
           this.bagData.lng = location.long;
           this.initMap();
         });
+      } else {
+        this.quickFunc.showAlert("Status", "Invalid Bag ID");
       }
     });
   }
@@ -103,7 +93,7 @@ export class HomePage {
 
     let markerOptions: GoogleMapsMarkerOptions = {
       position: new GoogleMapsLatLng(lat, lng),
-      title: "Bag's Location",
+      title: "Bag " + this.bagId + " Location",
       icon: image
     };
 
@@ -115,7 +105,7 @@ export class HomePage {
     // create CameraPosition
     let position: CameraPosition = {
       target: new GoogleMapsLatLng(lat, lng),
-      zoom: 12,
+      zoom: 17,
       tilt: 40
     };
 

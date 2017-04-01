@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
-import { SelBagPage } from '../pages/sel-bag/sel-bag';
+import { HomePage } from '../pages/home/home';
 
 declare var cordova;
 
@@ -10,7 +10,7 @@ declare var cordova;
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage = SelBagPage;
+  rootPage = HomePage;
 
   constructor(public platform: Platform) {
   }
